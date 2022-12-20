@@ -1,0 +1,51 @@
+Total_time = [1,length(Cycle_Speed)];
+
+simulation_time = 23612 ;
+load('EV_Modeling.mat');
+sim_outputs = sim('EV_Modeling',simulation_time);
+
+output_data = sim_outputs.yout(1);
+
+R_Out_Time_sec = output_data{1}.Values.Time;
+R_Out_Distance_km = output_data{1}.Values.Data;
+R_Out_Battery_SOC_perc = output_data{2}.Values.Data;
+R_Out_Motor_RPS = output_data{3}.Values.Data;
+R_Out_Motor_RPM = output_data{4}.Values.Data;
+R_Out_Current_Speed = output_data{5}.Values.Data;
+R_Out_Motor_Torque = output_data{7}.Values.Data;
+R_Out_SOC_Voltage = output_data{8}.Values.Data;
+R_Out_Electric_consumption_Current = output_data{9}.Values.Data;
+R_Out_Electric_Power = output_data{10}.Values.Data;
+
+
+% R_Output_table = {Out_Time_sec,Out_Distance_km};
+
+
+n = 1;
+for i = 1:length(R_Out_Time_sec)
+    if fix(R_Out_Time_sec(i)) - R_Out_Time_sec(i) == 0
+       Out_Time_sec(n,1) = R_Out_Time_sec(i);
+       Out_Battery_SOC_perc(n,1) = R_Out_Battery_SOC_perc(i);
+       Out_Current_Speed(n,1) = R_Out_Current_Speed(i);
+       Out_Distance_km(n,1) = R_Out_Distance_km(i);
+       Out_Electric_consumption_Current(n,1) = R_Out_Electric_consumption_Current(i);
+       Out_Electric_Power(n,1) = R_Out_Electric_Power(i);
+       Out_Motor_RPM(n,1) = R_Out_Motor_RPM(i);
+       Out_Motor_RPS(n,1) = R_Out_Motor_RPS(i);
+       Out_Motor_Torque(n,1) = R_Out_Motor_Torque(i);
+       Out_SOC_Voltage(n,1) = R_Out_SOC_Voltage(i);
+
+         n = n + 1; 
+    end
+ 
+end
+
+
+a = horzcat(Out_Time_sec,Out_Distance_km,Out_Battery_SOC_perc,Out_Motor_RPS,Out_Motor_RPM,Out_Current_Speed,Out_Motor_Torque,Out_SOC_Voltage,Out_Electric_consumption_Current,Out_Electric_Power);
+
+Name = ["Time","Distance[km]","Battery SOC[%]","Motor RPS","Motor RPM","Speed[km/h]","Motor Torque","SOC Voltage[V]","Electric_consumption_current[A]","Electirc Power[W]"];
+
+datasheet = vertcat(Name,a);
+
+ 
+writematrix(datasheet,'data.csv');
